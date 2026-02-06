@@ -110,6 +110,7 @@ public class SinglyLinkedList<E> implements List<E> {
             prev.setNext(newest);
             size++;
         }
+
     }
 
 
