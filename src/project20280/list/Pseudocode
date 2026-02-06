@@ -1,0 +1,16 @@
+Class QueueWithTwoStacks:
+    Stack inStack
+    Stack outStack
+
+    Method enqueue(element):
+        inStack.push(element)
+
+    Method dequeue():
+        if outStack is empty:
+            if inStack is empty:
+                return Error (Queue is empty)
+            while inStack is not empty:
+                temp = inStack.pop()
+                outStack.push(temp)
+
+        return outStack.pop()

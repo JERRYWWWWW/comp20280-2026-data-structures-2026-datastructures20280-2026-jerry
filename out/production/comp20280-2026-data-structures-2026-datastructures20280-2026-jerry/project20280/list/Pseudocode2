@@ -1,0 +1,18 @@
+Algorithm ReverseStack(Stack S):
+    Create Stack A
+    Create Stack B
+
+    // 第一步：S -> A
+    While S is not empty:
+        element = S.pop()
+        A.push(element)
+
+    // 第二步：A -> B
+    While A is not empty:
+        element = A.pop()
+        B.push(element)
+
+    // 第三步：B -> S
+    While B is not empty:
+        element = B.pop()
+        S.push(element)
