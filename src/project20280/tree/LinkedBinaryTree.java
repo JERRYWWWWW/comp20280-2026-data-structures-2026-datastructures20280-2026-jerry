@@ -3,6 +3,7 @@ package project20280.tree;
 import project20280.interfaces.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Concrete implementation of a binary tree using a node-based, linked
@@ -53,12 +54,40 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 
     // accessor methods (not already implemented in AbstractBinaryTree)
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
+        // Q2: createLevelOrder
         LinkedBinaryTree<String> bt = new LinkedBinaryTree<>();
         String[] arr = { "A", "B", "C", "D", "E", null, "F", null, null, "G", "H", null, null, null, null };
         bt.createLevelOrder(arr);
         System.out.println(bt.toBinaryTreeString());
+
+        // Q3: construct from inorder + preorder
+        Integer[] inorder  = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30};
+        Integer[] preorder = {18,2,1,14,13,12,4,3,9,6,5,8,7,10,11,15,16,17,28,23,19,22,20,21,24,27,26,25,29,30};
+        LinkedBinaryTree<Integer> bt2 = new LinkedBinaryTree<>();
+        bt2.construct(inorder, preorder);
+        System.out.println(bt2.toBinaryTreeString());
+
+        Integer[] inorder3  = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22};
+        Integer[] preorder3 = {6,5,3,2,1,0,4,17,10,9,8,7,16,14,13,12,11,15,21,20,19,18,22};
+        LinkedBinaryTree<Integer> bt3 = new LinkedBinaryTree<>();
+        bt3.construct(inorder3, preorder3);
+        System.out.println(bt3.toBinaryTreeString());
+        System.out.println("Diameter: " + bt3.diameter());
+
+        for (int n = 50; n <= 5000; n += 50) {
+            int totalHeight = 0;
+            for (int i = 0; i < 100; i++) {
+                LinkedBinaryTree<Integer> btRandom = LinkedBinaryTree.makeRandom(n);
+                totalHeight += btRandom.height();
+            }
+            double avgHeight = totalHeight / 100.0;
+            System.out.println(n + "," + avgHeight);
+        }
+
     }
+
+
 
 
     /**
@@ -344,6 +373,79 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
         return btp.print();
     }
 
+    public void construct(Integer[] inorder, Integer[] preorder) {
+        root = constructHelper(inorder, 0, inorder.length - 1,
+                preorder, new int[]{0});
+        size = inorder.length;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node<E> constructHelper(Integer[] inorder, int inStart, int inEnd,
+                                    Integer[] preorder, int[] preIndex) {
+        if (inStart > inEnd) return null;
+
+
+        Integer rootVal = preorder[preIndex[0]++];
+        Node<E> node = createNode((E) rootVal, null, null, null);
+
+
+        int inIndex = inStart;
+        while (inorder[inIndex] != rootVal) inIndex++;
+
+
+        node.setLeft(constructHelper(inorder, inStart, inIndex - 1, preorder, preIndex));
+        if (node.getLeft() != null) node.getLeft().setParent(node);
+
+        node.setRight(constructHelper(inorder, inIndex + 1, inEnd, preorder, preIndex));
+        if (node.getRight() != null) node.getRight().setParent(node);
+
+        return node;
+    }
+
+    public List<List<E>> rootToLeafPaths() {
+        List<List<E>> result = new ArrayList<>();
+        if (root == null) return result;
+        rootToLeafHelper(root, new ArrayList<>(), result);
+        return result;
+    }
+
+    private void rootToLeafHelper(Node<E> node, List<E> currentPath, List<List<E>> result) {
+        if (node == null) return;
+
+        currentPath.add(node.getElement());
+
+        if (node.getLeft() == null && node.getRight() == null) {
+
+            result.add(new ArrayList<>(currentPath));
+        } else {
+            rootToLeafHelper(node.getLeft(),  currentPath, result);
+            rootToLeafHelper(node.getRight(), currentPath, result);
+        }
+
+        currentPath.remove(currentPath.size() - 1);  // 回溯
+    }
+
+    public int diameter() {
+        int[] maxDiameter = {0};
+        diameterHelper(root, maxDiameter);
+        return maxDiameter[0];
+    }
+
+    private int diameterHelper(Node<E> node, int[] maxDiameter) {
+        if (node == null) return 0;
+
+        int leftHeight  = diameterHelper(node.getLeft(),  maxDiameter);
+        int rightHeight = diameterHelper(node.getRight(), maxDiameter);
+
+
+        int pathThroughNode = leftHeight + rightHeight + 1;
+        if (pathThroughNode > maxDiameter[0]) {
+            maxDiameter[0] = pathThroughNode;
+        }
+
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+
     /**
      * Nested static class for a binary tree node.
      */
@@ -403,3 +505,10 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
         }
     }
 }
+
+
+
+
+
+
+
