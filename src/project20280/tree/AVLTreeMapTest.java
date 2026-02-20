@@ -1,6 +1,7 @@
 package project20280.tree;
 
 import org.junit.jupiter.api.Test;
+import project20280.interfaces.Entry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -162,7 +163,22 @@ class AVLTreeMapTest {
 
     @Test
     void testEntrySet() {
-        fail("Not yet implemented");
+        AVLTreeMap<Integer, String> map = new AVLTreeMap<>();
+        Integer[] arr = new Integer[]{35, 26, 15, 24, 33, 4, 12, 1, 23, 21, 2, 5};
+
+        for (Integer i : arr) {
+            map.put(i, Integer.toString(i));
+        }
+
+        // 验证 entrySet 是否包含了所有的元素，并且是按顺序排列的
+        int lastKey = Integer.MIN_VALUE;
+        int count = 0;
+        for (Entry<Integer, String> entry : map.entrySet()) {
+            assertTrue(entry.getKey() >= lastKey, "EntrySet 应该按键升序排列");
+            lastKey = entry.getKey();
+            count++;
+        }
+        assertEquals(arr.length, count, "EntrySet 的数量应该与插入的数量一致");
     }
 
     @Test
