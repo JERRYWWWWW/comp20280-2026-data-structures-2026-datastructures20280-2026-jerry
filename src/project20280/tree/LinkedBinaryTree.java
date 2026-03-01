@@ -86,7 +86,19 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
         }
 
     }
+    //week 5
+    public void printLeaves() {
+        List<Position<E>> leaves = new ArrayList<>();
+        collectLeaves(root(), leaves);
+        System.out.println(leaves);
+    }
 
+    private void collectLeaves(Position<E> p, List<Position<E>> leaves) {
+        if (p == null) return;
+        collectLeaves(left(p), leaves);
+        if (isExternal(p)) leaves.add(p);
+        collectLeaves(right(p), leaves);
+    }
 
 
 
@@ -505,6 +517,8 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
         }
     }
 }
+
+
 
 
 

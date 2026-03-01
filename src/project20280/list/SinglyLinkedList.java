@@ -207,6 +207,41 @@ public class SinglyLinkedList<E> implements List<E> {
         return sb.toString();
     }
 
+
+    //week 5
+    public void reverse() {
+        head = reverseHelper(head);
+    }
+
+    private Node<E> reverseHelper(Node<E> curr) {
+        // 基础情况：空链表或只有一个节点，直接返回
+        if (curr == null || curr.getNext() == null) return curr;
+
+        // 递归逆转剩余部分，返回新的头节点
+        Node<E> newHead = reverseHelper(curr.getNext());
+
+        // 把当前节点接到逆转后的末尾
+        curr.getNext().setNext(curr);
+        curr.setNext(null);
+
+        return newHead;
+    }
+
+    public SinglyLinkedList<E> recursiveCopy() {
+        SinglyLinkedList<E> copy = new SinglyLinkedList<>();
+        copy.head = copyNode(head);
+        copy.size = this.size;
+        return copy;
+    }
+
+    private Node<E> copyNode(Node<E> node) {
+        // 基础情况：节点为空，返回null
+        if (node == null) return null;
+
+        // 创建新节点，其next递归复制
+        return new Node<>(node.getElement(), copyNode(node.getNext()));
+    }
+
     public static void main(String[] args) {
         SinglyLinkedList<Integer> ll = new SinglyLinkedList<Integer>();
         System.out.println("ll " + ll + " isEmpty: " + ll.isEmpty());
@@ -228,3 +263,6 @@ public class SinglyLinkedList<E> implements List<E> {
 
     }
 }
+
+
+
